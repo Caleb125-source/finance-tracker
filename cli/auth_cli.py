@@ -1,6 +1,6 @@
 from models.user import user    #This imports the User class to create user objects
 from db import storage          #This imports storage to save and load the user's data
-from colorama import Fpre, Style #This imports color tools for the colored terminal output
+from colorama import Fore, Style #This imports color tools for the colored terminal output
 
 def register(args):
     username = input("Choose a username: ").strip() #This asks the user to pick a username and strip removes the extra spaces
