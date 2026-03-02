@@ -46,9 +46,8 @@ class Transaction:
         return f"{self.__class__.__name__}(id={self.id}, amount={self.amount})"
 
 
-# ---------------------------------------------------
 # Income subclass
-# ---------------------------------------------------
+
 class Income(Transaction):
     """Represents income transactions"""
 
@@ -59,9 +58,8 @@ class Income(Transaction):
         return f"[INCOME] +{self.amount} | {self.category} | {self.date}"
 
 
-# ---------------------------------------------------
 # Expense subclass
-# ---------------------------------------------------
+
 class Expense(Transaction):
     """Represents expense transactions"""
 
