@@ -8,7 +8,7 @@ init(autoreset=True)
 BANNER = f"""
 {Fore.CYAN}
 ╔══════════════════════════════════════╗
-║    💰 Personal Finance Tracker CLI   ║    
+║       Personal Finance Tracker CLI   ║    
 ║         Powered by Python & JSON     ║
 ╚══════════════════════════════════════╝{Style.RESET_ALL}
 """
