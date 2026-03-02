@@ -104,7 +104,7 @@ def user_exists(username):
 
 users = {
     user_list = [
-        {username}: {
+        user_{username}: {
             password_hash: {password}
 
             session: {}
