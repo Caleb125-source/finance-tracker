@@ -1,37 +1,39 @@
-from models.user import user    #This imports the User class to create user objects
-from db import storage          #This imports storage to save and load the user's data
-from colorama import Fore, Style #This imports color tools for the colored terminal output
+from models.user import User
+from db import storage
+from colorama import Fore, Style
+
 
 def register(args):
-    username = input("Choose a username: ").strip() #This asks the user to pick a username and strip removes the extra spaces
+    username = input("Choose a username: ").strip()
 
-    if storage.user_exists(username): #This stops registraton if the username is already takn
+    if storage.user_exists(username):
         print(Fore.RED + "Username is already taken." + Style.RESET_ALL)
         return
 
-    password = input("Choose a passord: ").strip()
+    password = input("Choose a password: ").strip()
 
-    user = User(username=username, raw_password=password) #This creates a new User object with the given username and password
+    user = User(username=username, raw_password=password)
 
-    storage.save_user(user.to_dict()) #This one saves the users to the database as a dictionary
+    storage.save_user(user.to_dict())
 
-    print(Fore.Green + f"Account created for '{username}'. Your can log in." + Style.RESET_ALL)
+    print(Fore.GREEN + f"Account created for '{username}'. You can log in." + Style.RESET_ALL)
+
 
 def login(args):
     username = input("Username: ").strip()
     password = input("Password: ").strip()
 
-    user_data = storage.get_user(username) #This one looks up the user through the database
+    user_data = storage.get_user(username)
 
-    if not user_data:#This one prints out an error message if the user is not found 
+    if not user_data:
         print(Fore.RED + "User does not exist." + Style.RESET_ALL)
         return None
 
-    user = User(username=username, password_hash=user_data["password_hash"])#This rebuilds the User object using the stored password hash
+    user = User(username=username, password_hash=user_data["password_hash"])
 
     if user.verify_password(password):
-        print(Fore.Green + f"Welcome back, {username}!" + Style.TESET_ALL)
-        return username #Returns username to show a successful login
+        print(Fore.GREEN + f"Welcome back, {username}!" + Style.RESET_ALL)
+        return username
     else:
-        print(Fore.Red + "Incorrect Password." + Style.RESET_ALL)
-        return None #This returns None to show that the login has failed
+        print(Fore.RED + "Incorrect Password." + Style.RESET_ALL)
+        return None
