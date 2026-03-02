@@ -1,0 +1,15 @@
+{
+    "users": {
+        "user_list": [
+            {
+                "user_username": {
+                    "password_hash": "12345",
+                    "session": {},
+                    "transactions": [],
+                    "income": [],
+                    "expense": []
+                }
+            }
+        ]
+    }
+}
