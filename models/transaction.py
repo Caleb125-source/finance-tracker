@@ -68,3 +68,4 @@ class Expense(Transaction):
 
     def summary(self):
         return f"[EXPENSE] -{self.amount} | {self.category} | {self.date}"
+    
