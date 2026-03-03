@@ -6,9 +6,18 @@ class User:
     Demonstrates encapsulation and authentication logic.
     """
 
-    def __init__(self, username, password):
+  
+    def __init__(self, username, raw_password=None, password_hash=None):
         self.username = username
-        self._password_hash = self._hash_password(password)
+        if raw_password is not None:
+            self._password_hash = self._hash_password(raw_password)
+        elif password_hash is not None:
+            if isinstance(password_hash, str):
+                password_hash = password_hash.encode("utf-8")
+            self._password_hash = password_hash
+        else:
+            raise ValueError("Must provide either raw_password or password_hash")
+                
 
     # ----- PRIVATE HASHING METHOD -----
     def _hash_password(self, password: str) -> bytes:
