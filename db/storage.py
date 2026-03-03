@@ -50,12 +50,22 @@ def append_data(data, filepath = file_path):
         # Without appending, the entire data in the file would be replaced by the data argument.
 
 # Function for reading data 
-def read_data(filepath = file_path):
+def read_data(filepath=file_path):
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
-            file_contents = json.load(file)
-            return file_contents
-    except (json.JSONDecodeError, IOError):
+            data = json.load(file)
+
+            # If file has [] (a list), convert to expected dict structure
+            if isinstance(data, list):
+                return {"user_list": data}
+
+            # If file has dict but missing user_list, add it
+            if isinstance(data, dict) and "user_list" not in data:
+                data["user_list"] = []
+
+            return data
+
+    except (FileNotFoundError, json.JSONDecodeError, IOError):
         return {"user_list": []}
 
 
@@ -83,37 +93,74 @@ def save_user(user_dict, filepath=file_path):
         json.dump(data, file_to_write, indent=4)
 
 #Function to get user from the users.json file.
-def get_user(username, filepath = file_path):
+def get_user(username, filepath=file_path):
     data = read_data(filepath)
     target_key = f"user_{username}"
-    
-  
+
     for user_entry in data.get("user_list", []):
         if target_key in user_entry:
             return user_entry[target_key]
-        else:
-            return False # Boolean indicating user was not found.
+
+    return None
 
 def user_exists(username):
-    if get_user(username) == False:
+    return get_user(username) is not None
+
+# Transaction functions
+transaction_file_path = os.path.join(my_path, "../data/transactions.json")
+
+def add_transaction(username, txn_dict, filepath=None):
+    if filepath is None:
+        filepath = transaction_file_path
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            all_txns = json.load(f)
+        if not isinstance(all_txns, list):
+            all_txns = []
+    except (FileNotFoundError, json.JSONDecodeError):
+        all_txns = []
+
+    # Only keep this user's transactions + new one
+    all_txns.append({**txn_dict, "username": username})
+
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(all_txns, f, indent=4)
+
+
+def get_transactions(username, filepath=None):
+    if filepath is None:
+        filepath = transaction_file_path
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            all_txns = json.load(f)
+        if not isinstance(all_txns, list):
+            return []
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+    return [t for t in all_txns if t.get("username") == username]
+
+
+def delete_transaction(username, index, filepath=None):
+    if filepath is None:
+        filepath = transaction_file_path
+    user_txns = get_transactions(username, filepath)
+
+    if index < 0 or index >= len(user_txns):
         return False
-    else:
-        return True
 
-'''Expected data structure:
+    # Find and remove the specific transaction from the full list
+    target = user_txns[index]
 
-users = {
-    user_list = [
-        user_{username}: {
-            password_hash: {password}
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            all_txns = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return False
 
-            session: {}
-            transactions: []
-            income: []
-            expense: []
-        }
-    ]
-}
+    all_txns.remove(target)
 
-Each of the transactions, income and expense lists will (probably) store either dictionaries.
-'''
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(all_txns, f, indent=4)
+
+    return True
