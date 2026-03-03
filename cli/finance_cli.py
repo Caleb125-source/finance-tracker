@@ -15,7 +15,7 @@ def add_transaction(username: str, txn_type: str):
         return
 
     # Create the right transaction type based on txn_type
-    txn = Income(amount, category, description) if txn_type == "income" else Expense(amount, category, description)
+    txn = Income(username, amount, category, description) if txn_type == "income" else Expense(username, amount, category, description)
 
     storage.add_transaction(username, txn.to_dict())
     print(Fore.GREEN + txn.summary() + Style.RESET_ALL)
