@@ -59,3 +59,4 @@ def delete_transaction(username: str):
         print(color + msg + Style.RESET_ALL)
     except ValueError:
         print(Fore.RED + "Please enter a number." + Style.RESET_ALL)
+        
