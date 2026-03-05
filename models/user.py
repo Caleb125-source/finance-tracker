@@ -18,6 +18,11 @@ class User:
         else:
             raise ValueError("Either raw_password or password_hash must be provided.")
 
+    # ----- PUBLIC PROPERTY -----
+    @property
+    def password_hash(self):
+        return self._password_hash
+
     # ----- PRIVATE HASHING METHOD -----
     def _hash_password(self, password: str) -> bytes:
         salt = bcrypt.gensalt()
@@ -33,6 +38,10 @@ class User:
             "username": self.username,
             "password_hash": self._password_hash.decode("utf-8")
         }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(username=data["username"], password_hash=data["password_hash"])
 
     def __repr__(self):
         return f"User(username='{self.username}')"
